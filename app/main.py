@@ -1,12 +1,10 @@
-from typing import Optional
-from fastapi import FastAPI, Response, status, HTTPException, Depends
-from pydantic import BaseModel
+from fastapi import FastAPI, status, HTTPException, Depends
 from psycopg.rows import dict_row
-from random import randrange
 import psycopg
 import time
 # Related to SQL Alchemy
 from . import models
+from .schemas import Post
 from .database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 
@@ -14,12 +12,6 @@ models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
-
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
 
 
 # Setting up Psycpg
