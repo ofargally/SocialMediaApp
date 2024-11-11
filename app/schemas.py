@@ -24,3 +24,7 @@ class PostResponse(BasePost):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+
+
+class UserResponse(BaseModel):
+    email: EmailStr

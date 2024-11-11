@@ -5,7 +5,7 @@ from typing import List
 import time
 # Related to SQL Alchemy
 from . import models
-from .schemas import UpdatePost, CreatePost, PostResponse, UserCreate
+from .schemas import UpdatePost, CreatePost, PostResponse, UserCreate, UserResponse
 from .database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 
@@ -133,6 +133,11 @@ def update_post(id: int, post: UpdatePost, db: Session = Depends(get_db)):
 
 
 # ------ USER STUFF -------
-@app.post('/users', status_code=status.HTTP_201_CREATED, response_model=UserCreate)
-def create_user(db: Session = Depends(get_db)):
-    pass
+@app.post('/users', status_code=status.HTTP_201_CREATED)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    print("wtf")
+    new_user = models.User(**user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
