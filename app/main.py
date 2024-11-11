@@ -1,13 +1,15 @@
 from fastapi import FastAPI, status, HTTPException, Depends
 from psycopg.rows import dict_row
 import psycopg
+from typing import List
 import time
 # Related to SQL Alchemy
 from . import models
-from .schemas import Post
+from .schemas import UpdatePost, CreatePost, PostResponse, UserCreate
 from .database import engine, SessionLocal, get_db
 from sqlalchemy.orm import Session
 
+# This line create all the models
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -33,6 +35,8 @@ def root():
     return "Hello Message"
 
 
+# Commented this out because I no longer need it but the notes are useful
+"""
 @app.get('/sqlalchemy')
 # Depends makes the sql alchemy a dependency
 def test_posts(db: Session = Depends(get_db)):
@@ -47,16 +51,17 @@ def test_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
     print(posts)
     return {"data": "succ"}
+"""
 
 
-@app.get('/posts')
+@app.get('/posts', response_model=List[PostResponse])
 def get_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
-    return {"data": posts}
+    return posts
 
 
-@app.post('/posts', status_code=status.HTTP_201_CREATED)
-def create_posts(post: Post, db: Session = Depends(get_db)):
+@app.post('/posts', status_code=status.HTTP_201_CREATED, response_model=PostResponse)
+def create_posts(post: CreatePost, db: Session = Depends(get_db)):
     # can not use f"" -> makes vulnerable for SQL injection - user can insert SQL stuff!
     # SQL library can sanitize the input for us this way!
     # Staged changes
@@ -71,10 +76,10 @@ def create_posts(post: Post, db: Session = Depends(get_db)):
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
-    return {"data": new_post}
+    return new_post
 
 
-@app.get('/posts/{id}')
+@app.get('/posts/{id}', response_model=PostResponse)
 def get_post(id: int, db: Session = Depends(get_db)):
     # cursor.execute(
     #    """SELECT * FROM posts WHERE id = %s""", (id,))
@@ -86,7 +91,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
     if not postRetrieved:
         raise (HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                              detail=f"post with id {id} was not found"))
-    return {"post_details": postRetrieved}
+    return postRetrieved
 
 
 @app.delete('/posts/{id}', status_code=status.HTTP_204_NO_CONTENT)
@@ -106,9 +111,9 @@ def delete_posts(id: int, db: Session = Depends(get_db)):
         db.commit()
 
 
-@app.put('/posts/{id}')
+@app.put('/posts/{id}', response_model=PostResponse)
 # Make sure post comes in with the right schema
-def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: UpdatePost, db: Session = Depends(get_db)):
     # cursor.execute(
     #    """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *""",
     #    (post.title, post.content, post.published, id))
@@ -124,4 +129,10 @@ def update_post(id: int, post: Post, db: Session = Depends(get_db)):
         db.commit()
         # updated_post = db.refresh(post)
         # conn.commit()
-        return {"post_details": post_query.first()}
+        return post_query.first()
+
+
+# ------ USER STUFF -------
+@app.post('/users', status_code=status.HTTP_201_CREATED, response_model=UserCreate)
+def create_user(db: Session = Depends(get_db)):
+    pass
