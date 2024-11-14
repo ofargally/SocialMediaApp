@@ -24,5 +24,5 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
                detail="INVALID CREDENTIALS"))
     # Here the dictionary could realistically include all the authorizations of the user, but
     # for our purposes right now Imma just send the user id back
-    access_token = oauth2.create_access_code(data={"user_id": user.id})
+    access_token = oauth2.create_access_code(data={"user_id": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
