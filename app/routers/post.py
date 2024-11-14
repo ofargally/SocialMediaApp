@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from .. import utils, models
+from .. import utils, models, oauth2
 from ..schemas import PostResponse, CreatePost, UpdatePost
 from ..database import get_db
 from sqlalchemy.orm import Session
@@ -21,7 +21,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
-def create_posts(post: CreatePost, db: Session = Depends(get_db)):
+def create_posts(post: CreatePost, db: Session = Depends(get_db), get_current_user: int = Depends(oauth2.get_current_user)):
     # can not use f"" -> makes vulnerable for SQL injection - user can insert SQL stuff!
     # SQL library can sanitize the input for us this way!
     # Staged changes
