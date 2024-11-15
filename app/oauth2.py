@@ -1,26 +1,25 @@
 # import jwt
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 import os
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from . import schemas, database, models
+from .config import settings
 from sqlalchemy.orm import Session
-load_dotenv()
 
 # TokenURL is the endpoint
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # USE OPENSSL Library to generate this: TERMINAL: openssl rand -hex 32
 
-SECRET_KEY = os.getenv("AUTH_SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.AUTH_SECRET_KEY
+ALGORITHM = settings.AUTH_ALGORITHM
+JWT_EXPIRY_MINUTES = settings.JWT_EXPIRY_MINUTES
 
 
 def create_access_code(data: dict):
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now() + timedelta(minutes=JWT_EXPIRY_MINUTES)
     to_encode.update({"exp": expire})
     encoded_token = jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
     return encoded_token

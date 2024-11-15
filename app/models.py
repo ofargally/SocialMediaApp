@@ -1,5 +1,6 @@
 # Every model represents a table in our DB
 from .database import Base
+from sqlalchemy.orm import Relationship
 from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean, text, ForeignKey
 
 
@@ -14,6 +15,9 @@ class Post(Base):
     # reference table name not class name
     owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
+    # User class - sqlalchemy will automatically figure out what we want somehow.
+    # ok the somehow is as follows: sqlalchemy fetches the user based of the owner_id and fetches it for us.
+    owner = Relationship("User")
 
 
 class User(Base):

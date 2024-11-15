@@ -2,17 +2,16 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from . import config
 
-user_name = os.getenv('DB_USERNAME')
-password = os.getenv('DB_PASSWORD')
-host_name = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME')
+DB_USERNAME = config.settings.DB_USERNAME
+DB_PASSWORD = config.settings.DB_PASSWORD
+DB_HOST = config.settings.DB_HOST
+DB_NAME = config.settings.DB_NAME
+DB_PORT = config.settings.DB_PORT
 
 engine = create_engine(
-    f"postgresql+psycopg://{user_name}:{password}@{host_name}/{db_name}")
+    f"postgresql+psycopg://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

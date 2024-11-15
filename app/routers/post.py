@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from .. import utils, models, oauth2
+from .. import models, oauth2
 from ..schemas import PostResponse, CreatePost, UpdatePost
 from ..database import get_db
 from sqlalchemy.orm import Session
