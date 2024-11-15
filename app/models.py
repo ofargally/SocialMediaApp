@@ -1,6 +1,6 @@
 # Every model represents a table in our DB
 from .database import Base
-from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean, text
+from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean, text, ForeignKey
 
 
 class Post(Base):
@@ -11,6 +11,9 @@ class Post(Base):
     published = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
+    # reference table name not class name
+    owner_id = Column(Integer, ForeignKey(
+        "users.id", ondelete="CASCADE"), nullable=False)
 
 
 class User(Base):

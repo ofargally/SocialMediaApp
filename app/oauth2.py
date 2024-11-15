@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 import os
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from . import schemas
+from . import schemas, database, models
+from sqlalchemy.orm import Session
 load_dotenv()
 
 # TokenURL is the endpoint
@@ -31,8 +32,6 @@ def verify_access_token(token: str, credentials_exception):
     try:
         # decode JWT token sent from user
         payload = jwt.decode(token, key=SECRET_KEY, algorithms=ALGORITHM)
-        print("payload", payload)
-        print("type", type(payload))
         # Extract ID
         id: str = payload.get("user_id")
         # if No ID send in 404
@@ -51,12 +50,14 @@ def verify_access_token(token: str, credentials_exception):
 # add as a parameter
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     # Need to check the header protocols
     credentials_exception = HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail="INVALID CREDENTIALS", headers={"WWW-Authenticate": "Bearer"})
-    return verify_access_token(token, credentials_exception)
-
+    token = verify_access_token(token, credentials_exception)
+    user = db.query(models.User).filter(
+        models.User.id == int(token.user_id)).first()
+    return user
 
 # Explanation: Anytime we have a protected endpoint (requires user authentication),
 # We can add in an extra dependency into said endpoint that verifies the user token
