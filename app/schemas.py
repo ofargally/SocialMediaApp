@@ -17,9 +17,11 @@ class UpdatePost(BasePost):
     pass
 
 
+# Sending the Post Out
 class PostResponse(BasePost):
     id: int
     created_at: datetime
+    owner_id: int
 
 
 class UserCreate(BaseModel):
