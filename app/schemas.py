@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, conint
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
 
 
 class BasePost(BaseModel):
@@ -49,3 +49,9 @@ class PostResponse(BasePost):
     created_at: datetime
     owner_id: int
     owner: UserResponse
+
+
+class Vote(BaseModel):
+    post_id: int
+    # to restrict the integer we received to be zero or one - used instead of conint which is deprecared
+    dir: Annotated[int, Field(strict=True, ge=0, le=1)]
