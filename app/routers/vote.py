@@ -11,6 +11,13 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 # the user retrived is not an int, but for some reason the type validation here does not work.
 def vote(userVote: schemas.Vote, db: Session = Depends(database.get_db), current_user: any = Depends(oauth2.get_current_user)):
+    # Check if post exists at all
+    post = db.query(models.Post).filter(
+        models.Post.id == userVote.post_id).first()
+    if not post:
+        raise (HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+               detail="Post was not found"))
+    # Continue with other logic:
     vote_query = db.query(models.Vote).filter(
         models.Vote.post_id == userVote.post_id, models.Vote.user_id == current_user.id)
     vote = vote_query.first()
@@ -27,7 +34,7 @@ def vote(userVote: schemas.Vote, db: Session = Depends(database.get_db), current
     else:  # Not upvoted
         if not vote:
             raise (HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                   detail=f"post {userVote.post_id} does not exist "))
+                   detail=f"post {userVote.post_id} has not been voted"))
         # wrong
         # db.delete(vote)
         vote_query.delete(synchronize_session=False)
