@@ -44,11 +44,16 @@ class TokenData(BaseModel):
     # Sending the Post Out
 
 
-class PostResponse(BasePost):
+class Post(BasePost):
     id: int
     created_at: datetime
     owner_id: int
     owner: UserResponse
+
+
+class PostResponse(BaseModel):
+    post: Post
+    votes: int
 
 
 class Vote(BaseModel):
