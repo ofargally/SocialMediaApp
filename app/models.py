@@ -27,6 +27,9 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
+    # SQLAlchemy can not add new columns on the fly - gotta restart the table
+    # Or use Alembic - Data migration Tool
+    # phone_number = Column(String)
 
 
 class Vote(Base):
