@@ -3,8 +3,9 @@ from fastapi import FastAPI
 from . import models
 from .database import engine
 from .routers import post, user, auth, vote
-# This line create all the models
-models.Base.metadata.create_all(bind=engine)
+# This line create all the models - not needed with Alembic as we can use
+# Autogenerate to create models
+# models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()

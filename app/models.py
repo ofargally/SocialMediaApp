@@ -18,6 +18,7 @@ class Post(Base):
     # User class - sqlalchemy will automatically figure out what we want somehow.
     # ok the somehow is as follows: sqlalchemy fetches the user based of the owner_id and fetches it for us.
     owner = Relationship("User")
+    phone_number = Column(String, nullable=True)
 
 
 class User(Base):

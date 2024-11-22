@@ -1,17 +1,20 @@
+# Migration stuff - to create any db-relate change, we initialize a revision to track all changes
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from app.database import Base
+from app.models import Base
 from app.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+URL = f"postgresql+psycopg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{
+    settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 config.set_main_option(
-    "sqlalchemy.url", f"postgresql+psycopg://{settings.DB_USERNAME}:{
-        settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+    "sqlalchemy.url", URL
 )
 
 # Interpret the config file for Python logging.
