@@ -1,5 +1,5 @@
 from typing import List
-from .. import utils, models
+from .. import utils, models, oauth2
 from ..schemas import UserCreate, UserResponse
 from ..database import get_db
 from sqlalchemy.orm import Session
@@ -45,3 +45,27 @@ def get_user(id: int, db: Session = Depends(get_db)):
         raise (HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                detail=f"USER WITH ID: {id} does not exist"))
     return user
+
+
+@router.get("/{id}/followers", response_model=List[UserResponse])
+def get_followers_list(id: int, limit: int = 10, current_user: any = Depends(oauth2.get_current_user), db: Session = Depends(get_db)):
+    # check if id exists:
+    check_id = db.query(models.User).filter(models.User.id == id).first()
+    if not check_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"user with id {id} was not found")
+    followers = db.query(models.User).join(models.Follow, models.User.id == models.Follow.follower_id).filter(
+        models.Follow.followed_id == id).limit(limit).all()
+    return followers
+
+
+@router.get("/{id}/followees", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
+def get_followed_list(id: int, limit: int = 10, current_user: any = Depends(oauth2.get_current_user), db: Session = Depends(get_db)):
+    # check if id exists:
+    check_id = db.query(models.User).filter(models.User.id == id).first()
+    if not check_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"user with id {id} was not found")
+    followees = db.query(models.User).join(models.Follow, models.User.id == models.Follow.followed_id).filter(
+        models.Follow.follower_id == id).limit(limit).all()
+    return followees
