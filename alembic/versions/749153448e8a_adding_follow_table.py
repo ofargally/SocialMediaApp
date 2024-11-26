@@ -23,6 +23,8 @@ def upgrade() -> None:
         "follows",
         sa.Column("follower_id", sa.Integer(), nullable=False),
         sa.Column("followed_id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.TIMESTAMP(
+            timezone=True), server_default=sa.text("now()"), nullable=False),
         sa.PrimaryKeyConstraint("follower_id", "followed_id"),
         sa.ForeignKeyConstraint(
             ["follower_id"], ["users.id"], ondelete="CASCADE"),
