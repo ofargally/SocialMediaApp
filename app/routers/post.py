@@ -27,12 +27,9 @@ def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.
         models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(
             models.Post.title.contains(searchTerm)).limit(limit).offset(skip)
     results = results_query.all()
-    print(results)
-    print("OKAY\n")
 
     for i in range(len(results)):
         elementList = results[i]
-        print("ELEMENT LIST", elementList)
         results[i] = {
             "post": elementList[0],
             "votes": elementList[1]
