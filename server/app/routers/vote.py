@@ -23,8 +23,7 @@ def vote(userVote: schemas.Vote, db: Session = Depends(database.get_db), current
     vote = vote_query.first()
     if userVote.dir == 1:  # means post should be upvoted
         if vote:  # already existed means we can not upvote it anymore:
-            raise (HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Current User {
-                   current_user.id} has already upvoted post {vote.post_id}"))
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Current User {current_user.id} has already upvoted post {vote.post_id}")
         # Otherwise create the new entry row
         new_vote = models.Vote(post_id=userVote.post_id,
                                user_id=current_user.id)

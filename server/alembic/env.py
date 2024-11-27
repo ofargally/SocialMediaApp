@@ -11,8 +11,7 @@ from app.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-URL = f"postgresql+psycopg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{
-    settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+URL = f"postgresql+psycopg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 config.set_main_option(
     "sqlalchemy.url", URL
 )
