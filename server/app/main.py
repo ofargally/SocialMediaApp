@@ -13,7 +13,7 @@ app = FastAPI()
 
 # domains that should be able to connect to our API, should be configured to allow our webapp only
 # unless the API is being developed for specific purposes
-origins = ["https://www.google.com"]
+origins = ["https://www.google.com", "http://localhost:5173"]
 
 # Middleware is a function that runs before each request
 
