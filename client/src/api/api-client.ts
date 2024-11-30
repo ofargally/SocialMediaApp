@@ -11,17 +11,16 @@ class APIClient<T> {
     this.endpoint = endpoint;
   }
   // we are going to work on the log in endpoint
-  login = async (email: string, password: string) => {
+  login = async (username: string, password: string) => {
     const formData = new FormData();
-    formData.append("email", email);
+    formData.append("username", username);
     formData.append("password", password);
-    return axiosInstance
-      .post<T>(this.endpoint + "/login", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => response.data);
+    const response = await axiosInstance.post<T>(this.endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
   };
 }
 

@@ -1,19 +1,35 @@
 import React, { useRef } from "react";
 import LoginPageProps from "../Interfaces";
+import useLogin from "../hooks/useLogin";
 
 const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
-  const emailRef = useRef<HTMLInputElement>(null);
+  const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const { mutate: login, error } = useLogin();
 
   console.log("page loaded");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //need to get the email and password printed
-    const email = emailRef.current?.value || "";
+    const username = usernameRef.current?.value || "";
     const password = passwordRef.current?.value || "";
-    console.log("Form submitted:", { email, password });
-    onLogin();
+    console.log("Form submitted:", { username, password });
+    login(
+      { username, password }, // Variables passed to the mutation function
+      {
+        onSuccess: (data) => {
+          console.log("Login successful:", data);
+          onLogin();
+          // Handle successful login (e.g., update state, redirect)
+        },
+        onError: (error) => {
+          console.error("Login failed:", error);
+          // Handle login error (e.g., display error message)
+        },
+      }
+    );
   };
+
   const LoginForm = () => {
     return (
       <form
@@ -30,7 +46,7 @@ const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
           <input
             type="email"
             id="email"
-            ref={emailRef}
+            ref={usernameRef}
             required
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
@@ -69,6 +85,7 @@ const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
           <LoginForm />
         </>
       )}
+      {error && <p style={{ color: "red" }}>{error.message}</p>}
     </div>
   );
 };
