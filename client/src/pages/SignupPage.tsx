@@ -23,7 +23,7 @@ const SignupPage = ({ onSignup }: SignupPageProps) => {
         onSuccess: (data) => {
           console.log("Login successful:", data);
           onSignup();
-          navigate("/login");
+          navigate("/LoginPage");
           // Handle successful login (e.g., update state, redirect)
         },
         onError: (error) => {

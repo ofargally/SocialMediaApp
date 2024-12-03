@@ -1,13 +1,14 @@
 import React, { useRef } from "react";
 import { LoginPageProps } from "../Interfaces";
 import useLogin from "../hooks/useLogin";
+import { useNavigate } from "react-router-dom";
 import UserSubmissionForm from "../components/UserSubmissionForm";
 
 const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const { mutate: login, error } = useLogin();
-
+  const navigate = useNavigate();
   console.log("page loaded");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
         onSuccess: (data) => {
           console.log("Login successful:", data);
           onLogin();
+          navigate("/Homepage");
           // Handle successful login (e.g., update state, redirect)
         },
         onError: (error) => {
