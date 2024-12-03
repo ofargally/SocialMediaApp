@@ -4,6 +4,7 @@ from ..schemas import UserCreate, UserResponse
 from ..database import get_db
 from sqlalchemy.orm import Session
 from fastapi import status, HTTPException, Depends, APIRouter
+from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 
 # ------ USER STUFF -------
@@ -15,17 +16,17 @@ router = APIRouter(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     print("user created")
     # Check if user has already been created
     check_user_query = db.query(models.User).filter(
-        models.User.email == user.email)
+        models.User.email == user.username)
     if check_user_query.first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail="User with this email already exists")
     # Hash password and apply
     user.password = utils.hash(user.password)
-    new_user = models.User(**user.model_dump())
+    new_user = models.User(email=user.username, password=user.password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
