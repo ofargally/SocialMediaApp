@@ -1,14 +1,12 @@
 import React, { useRef } from "react";
 import { LoginPageProps } from "../Interfaces";
-import useLogin from "../hooks/useLogin";
-import { useNavigate } from "react-router-dom";
 import UserSubmissionForm from "../components/UserSubmissionForm";
+import { useAuth } from "../hooks/useAuth";
 
-const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
+const LoginPage = ({ isLoggedIn }: LoginPageProps) => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { mutate: login, error } = useLogin();
-  const navigate = useNavigate();
+  const auth = useAuth();
   console.log("page loaded");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,21 +14,8 @@ const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
     const username = usernameRef.current?.value || "";
     const password = passwordRef.current?.value || "";
     console.log("Form submitted:", { username, password });
-    login(
-      { username, password }, // Variables passed to the mutation function
-      {
-        onSuccess: (data) => {
-          console.log("Login successful:", data);
-          onLogin();
-          navigate("/Homepage");
-          // Handle successful login (e.g., update state, redirect)
-        },
-        onError: (error) => {
-          console.error("Login failed:", error);
-          // Handle login error (e.g., display error message)
-        },
-      }
-    );
+    auth.loginAction({ username, password });
+    console.log("ERROR:", auth.error);
   };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -46,7 +31,7 @@ const LoginPage = ({ onLogin, isLoggedIn }: LoginPageProps) => {
           />
         </>
       )}
-      {error && <p style={{ color: "red" }}>{error.message}</p>}
+      {auth.error && <p style={{ color: "red" }}>{auth.error.message}</p>}
     </div>
   );
 };

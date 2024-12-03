@@ -5,7 +5,6 @@ export interface UserSubmissionFormProps {
 }
 
 export interface LoginPageProps {
-  onLogin: () => void;
   isLoggedIn: boolean;
 }
 
