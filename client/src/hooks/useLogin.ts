@@ -15,19 +15,4 @@ const useLogin = () =>
       apiClient.login(credentials.username, credentials.password),
   });
 
-//
-/*
-const useLogin = () =>
-  useMutation<LoginResponse, Error, { email: string; password: string }>({
-    mutationFn: async (credentials) => {
-      // Call the asynchronous API client method
-      const data = await apiClient.login(
-        credentials.email,
-        credentials.password
-      );
-      return data;
-    },
-  });
-  */
-
 export default useLogin;

@@ -22,6 +22,17 @@ class APIClient<T> {
     });
     return response.data;
   };
+  createUser = async (username: string, password: string) => {
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    const response = await axiosInstance.post<T>(this.endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  };
 }
 
 export default APIClient;
