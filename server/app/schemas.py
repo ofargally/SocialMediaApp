@@ -60,3 +60,8 @@ class Vote(BaseModel):
     post_id: int
     # to restrict the integer we received to be zero or one - used instead of conint which is deprecared
     dir: Annotated[int, Field(strict=True, ge=0, le=1)]
+
+class loginResponse(BaseModel):
+    user_id: int
+    access_token: str
+    token_type: str
