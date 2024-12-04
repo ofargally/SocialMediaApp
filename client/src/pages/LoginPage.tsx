@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
-import { LoginPageProps } from "../Interfaces";
 import UserSubmissionForm from "../components/UserSubmissionForm";
 import { useAuth } from "../hooks/useAuth";
-
-const LoginPage = ({ isLoggedIn }: LoginPageProps) => {
+import { useNavigate } from "react-router-dom";
+const LoginPage = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const auth = useAuth();
-  console.log("page loaded");
+  const navigate = useNavigate();
+  console.log(auth.token);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //need to get the email and password printed
@@ -19,8 +19,16 @@ const LoginPage = ({ isLoggedIn }: LoginPageProps) => {
   };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {isLoggedIn ? (
-        <div className="text-green-500 text-xl font-semibold">Logged in</div>
+      {auth.token ? (
+        <>
+          <div className="text-green-500 text-xl font-semibold">Logged in</div>
+          <button
+            onClick={() => navigate("/Homepage")}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Go to Homepage
+          </button>
+        </>
       ) : (
         <>
           <h1 className="text-3xl font-bold mb-4">Login Page</h1>
@@ -29,9 +37,9 @@ const LoginPage = ({ isLoggedIn }: LoginPageProps) => {
             usernameRef={usernameRef}
             passwordRef={passwordRef}
           />
+          {auth.error && <p style={{ color: "red" }}>{auth.error.message}</p>}
         </>
       )}
-      {auth.error && <p style={{ color: "red" }}>{auth.error.message}</p>}
     </div>
   );
 };

@@ -53,8 +53,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const logOut = (): void => {
     setUser(null);
     setToken("");
+    setError(null);
     localStorage.removeItem("site");
-    navigate("/login");
+    navigate("/");
   };
 
   return (

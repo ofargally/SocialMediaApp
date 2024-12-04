@@ -33,6 +33,10 @@ class APIClient<T> {
     });
     return response.data;
   };
+  getPosts = async () => {
+    const response = await axiosInstance.get<T>(this.endpoint);
+    return response.data;
+  };
 }
 
 export default APIClient;

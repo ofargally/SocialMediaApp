@@ -5,10 +5,22 @@ export interface UserSubmissionFormProps {
 }
 
 export interface LoginPageProps {
+  onLogin: () => void;
   isLoggedIn: boolean;
 }
 
 export interface SignupPageProps {
   onSignup: () => void;
   isSignedUp: boolean;
+}
+
+export interface Post {
+  id: string;
+  user: {
+    name: string;
+    avatar: string;
+  };
+  content: string;
+  timestamp: string;
+  likes: number;
 }

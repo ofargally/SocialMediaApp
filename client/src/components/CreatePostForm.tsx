@@ -1,7 +1,7 @@
 import React from "react";
 
-const CreatePost = () => {
+const CreatePostForm = () => {
   return <div>CreatePost</div>;
 };
 
-export default CreatePost;
+export default CreatePostForm;
